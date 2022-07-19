@@ -1,0 +1,9 @@
+Extract the zip file to a location in your system
+Open CMD, navigate to the location of the project
+Open xampp, start APACHE and MySQL.
+Create database with the name zurilaravel
+go back to CMD execute php artisan config:cache
+execute php artisan migrate
+execute php artisan serve
+
+Go to your browser to view the app.
