@@ -7,4 +7,4 @@ Laravel is a web application framework with expressive, elegant syntax. It has f
 - Model
 - Migrations e.t.c
 
-<a href="http://zurilaravelcrud.herokuapp.com/" target="_blank">## Go to Laravel CRUD App</a> 
+### <a href="http://zurilaravelcrud.herokuapp.com/" target="_blank">Go to Laravel CRUD App</a> 
