@@ -6,5 +6,11 @@ Laravel is a web application framework with expressive, elegant syntax. It has f
 - Controller
 - Model
 - Migrations e.t.c
+## API ENDPOINTS
 
-### <a href="http://zurilaravelcrud.herokuapp.com/" target="_blank">Go to Laravel API App</a> 
+- Register: <a href='https://zurilaravelapi.herokuapp.com/api/user/create'>https://zurilaravelapi.herokuapp.com/api/user/login</a>, METHOD: POST
+- Login: <a href='https://zurilaravelapi.herokuapp.com/api/user/login'>https://zurilaravelapi.herokuapp.com/api/user/login</a>, METHOD: POST
+- Update: <a href='https://zurilaravelapi.herokuapp.com/api/user/update'>https://zurilaravelapi.herokuapp.com/api/user/update</a>, METHOD: PUT
+- Login: <a href='https://zurilaravelapi.herokuapp.com/api/user/delete'>https://zurilaravelapi.herokuapp.com/api/user/delete</a>, METHOD: DELETE
+- GetAllUsers: <a href='https://zurilaravelapi.herokuapp.com/api/user/'>https://zurilaravelapi.herokuapp.com/api/user</a>, METHOD: GET
+- Get single user: <a href='https://zurilaravelapi.herokuapp.com/api/user/1'>https://zurilaravelapi.herokuapp.com/api/user/1</a>, METHOD: GET
