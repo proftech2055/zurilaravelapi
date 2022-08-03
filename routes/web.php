@@ -16,11 +16,11 @@ use App\Http\Controllers\UserController;
 Route::get('/', function () {
     return view('welcome', ['title' => "Home"]);
 });
-Route::get('/register', function () {
+/*Route::get('/register', function () {
     return view('register', ['title' => "Register"]);
 });
 Route::post('/register', [UserController::class, "create"]);
 Route::get('/accounts', [UserController::class, "read"]);
 Route::get('/accounts/{id}', [UserController::class, "edit"]);
 Route::put('/accounts/{id}', [UserController::class, "update"]);
-Route::delete('/accounts/{id}', [UserController::class, "delete"]);
+Route::delete('/accounts/{id}', [UserController::class, "delete"]);*/

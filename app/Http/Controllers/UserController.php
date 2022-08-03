@@ -4,60 +4,84 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
 
-    public function create(Request $request){
-        $valid = $request->validate([
+    public function register(Request $request)
+    {
+        $valid = Validator::make($request->all(), [
             "name" => ["required"],
-            "email" => ["required", "email:rfc"],
-            "phone" => ["required", "regex: /^[0-9]{11}$/"]
+            "email" => ["required", "unique:users,email", "email:rfc"],
+            "password" => ["required", "min:8", "max:20"],
+            "cpassword" => ["required", "same:password"]
+        ], ["unique" => "The :attribute is already taken"]);
+
+        if ($valid->fails())
+            return Response::json(["responseCode" => "99", "responseDescription" => "Fill in appropriate data", "data" => $valid->validated(), "errors" => $valid->errors()]);
+        $validData = $valid->validated();
+        $create = User::create([
+            "name" => $validData["name"],
+            "email" => $validData["email"],
+            "password" => Hash::make($validData["password"])
+        ]);
+        return Response::json(["responseCode" => "00", "responseDescription" => "Registration successfull", "data" => $create, "errors" => []]);
+    }
+
+    public function login(Request $request)
+    {
+        $valid = Validator::make($request->all(), [
+            "email" => ["required"],
+            "password" => ["required"]
         ]);
 
-        if(User::where("email", $valid["email"])->first())
-            return back()->with("error", "Account already exist");
-        User::create([
-            "name" => $valid["name"],
-            "email" => $valid["email"],
-            "phone" => $valid["phone"]
-        ]);
-        return back()->with("success", "Account registered");
+        if ($valid->fails())
+            return Response::json(["responseCode" => "99", "responseDescription" => "Fill in appropriate data", "data" => $valid->validated(), "errors" => $valid->errors()]);
+        $validData = $valid->validated();
+        if (Auth::validate(["email" => $validData["email"], "password" => $validData["password"]])) {
+            Auth::login(User::where("email", $validData["email"])->first());
+            return Response::json(["responseCode" => "00", "responseDescription" => "Login successfull", "data" => Auth::user(), "errors" => []]);
+        }
+        return Response::json(["responseCode" => "99", "responseDescription" => "Invalid login details", "data" => $validData, "errors" => []]);
     }
 
-     public function read(){
-        $data = User::all();
-        return view('all-account', ["title" => "Accounts", "data" => $data]);
+    public function getUser($id = null)
+    {
+        if (!$id) {
+            $data = User::all();
+            return Response::json(["responseCode" => "00", "responseDescription" => "All users data", "data" => $data, "errors" => []]);
+        }
+        $data = User::find($id);
+        return Response::json(["responseCode" => "00", "responseDescription" => "single user data", "data" => $data, "errors" => []]);
     }
 
-    public function edit($id){
-        $acct = User::find($id);
-        if(!$acct)
-            return abort(404);
-        return view('edit-account', ["title" => "Edit - Accounts", "data" => $acct]);
-    }
-
-    public function update(Request $request, $id){
-        $acct = User::find($id);
-        if(!$acct)
-            return abort(404);
-        $valid = $request->validate([
+    public function update($id, Request $request)
+    {
+        //$user = User::find($id);
+        $valid = Validator::make($request->all(), [
             "name" => ["required"],
-            "email" => ["required", "email:rfc"],
-            "phone" => ["required", "regex: /^[0-9]{11}$/"]
+            "email" => ["required", "email:rfc"]
+        ], ["unique" => "The :attribute is already taken"]);
+
+        if ($valid->fails())
+            return Response::json(["responseCode" => "99", "responseDescription" => "Fill in appropriate data", "data" => $valid->validated(), "errors" => $valid->errors()]);
+        $validData = $valid->validated();
+        User::where("id", $id)->update([
+            "name" => $validData["name"],
+            "email" => $validData["email"]
         ]);
-        $acct->name = $valid["name"];
-        $acct->email = $valid["email"];
-        $acct->phone = $valid["phone"];
-        $acct->save();
-        return back()->with("success", "Account updated");
+        $user = User::find($id);
+        return Response::json(["responseCode" => "00", "responseDescription" => "User data updated", "data" => $user, "errors" => []]);
     }
 
-    public function delete($id){
-        $acct = User::find($id);
-        if(!$acct)
-            return abort(404);
-        $acct->delete();
-        return back()->with('success', "Account deleted"); 
+    public function delete($id)
+    {
+        $user = User::find($id);
+        $user->delete();
+        return Response::json(["responseCode" => "00", "responseDescription" => "User deleted", "data" => $user, "errors" => []]);
     }
 }
